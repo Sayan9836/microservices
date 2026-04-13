@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    networks:
+      - todo-network
+
+  task-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: task_db
+    ports:
+      - "5434:5432"
+    networks:
+      - todo-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # RabbitMQ port
+      - "15672:15672" # Management UI
+    networks:
+      - todo-network
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://user:password@auth-db:5432/auth_db?schema=public
+      - PORT=3001
+      - JWT_ACCESS_SECRET=your-very-secret-key
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - auth-db
+      - rabbitmq
+    networks:
+      - todo-network
+
+  task-service:
+    build: ./task-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://user:password@task-db:5432/task_db?schema=public
+      - PORT=3002
+      - JWT_ACCESS_SECRET=your-very-secret-key
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - task-db
+      - rabbitmq
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
