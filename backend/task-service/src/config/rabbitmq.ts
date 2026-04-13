@@ -1,11 +1,14 @@
 import amqp from 'amqplib';
 import { prisma } from './db';
 
-export const startRabbitMQConsumer = async () => {
+let channel: amqp.Channel;
+
+export const initRabbitMQ = async () => {
   try {
     const connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
-    const channel = await connection.createChannel();
+    channel = await connection.createChannel();
     await channel.assertQueue('USER_DELETED');
+    await channel.assertQueue('TODO_CREATED');
 
     console.log('Task Service waiting for messages in USER_DELETED queue...');
 
@@ -15,7 +18,6 @@ export const startRabbitMQConsumer = async () => {
         console.log(`Received user deletion event: ${userId}`);
 
         try {
-          // The magic happens here: Cleaning up the todos for the deleted user
           const deletedCount = await prisma.todo.deleteMany({
             where: { userId }
           });
@@ -24,11 +26,20 @@ export const startRabbitMQConsumer = async () => {
           channel.ack(msg);
         } catch (error) {
           console.error('Error cleaning up todos:', error);
-          // Don't ack if there was an error so we can retry
         }
       }
     });
   } catch (error) {
     console.error('Failed to connect to RabbitMQ in Task Service:', error);
   }
+};
+
+export const publishTodoCreated = (userId: string) => {
+  if (!channel) {
+    console.error('RabbitMQ channel not initialized in Task Service');
+    return;
+  }
+  const message = JSON.stringify({ userId });
+  channel.sendToQueue('TODO_CREATED', Buffer.from(message));
+  console.log(`Sent message to TODO_CREATED queue: ${message}`);
 };

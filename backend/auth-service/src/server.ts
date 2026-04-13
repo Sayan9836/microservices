@@ -1,7 +1,8 @@
 import app from "./app";
 import dotenv from 'dotenv';
 import { connectDB } from "./config/db";
-import { connectRabbitMQ } from "./config/rabbitmq";
+import { initRabbitMQ } from "./config/rabbitmq";
+
 
 import path from 'path'
 dotenv.config({path: path.join(process.cwd(), '.env')})
@@ -11,7 +12,7 @@ const startServer = async () => {
     try {
       server = app.listen( PORT ,async() => {
         await connectDB();
-        await connectRabbitMQ();
+        await initRabbitMQ();
         console.log(`server started on port ${PORT}`)
       })
 

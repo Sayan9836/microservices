@@ -1,5 +1,6 @@
 import { prisma } from "@/config/db"
 import type { Request, Response } from "express"
+import { publishTodoCreated } from "@/config/rabbitmq"
 
 export const addTodo = async (req: Request, res: Response) => {
 
@@ -13,19 +14,23 @@ export const addTodo = async (req: Request, res: Response) => {
         })
     }
     try {
+        const userId = (req as any).user.id;
         const todo = await prisma.todo.create({
             data: { 
                 name,
-                userId: (req as any).user.id
+                userId
             }
         })
 
+        // Publish event to RabbitMQ
+        publishTodoCreated(userId);
 
         return res.status(201).json({
             success: true,
             message: 'todo created successfully',
             data: todo
         })
+
 
     } catch (error) {
         return res.status(400).json({
