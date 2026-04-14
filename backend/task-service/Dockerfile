@@ -11,8 +11,10 @@ RUN npx prisma generate
 
 # Source
 COPY . .
-RUN npm run build
 
 # Start
+
 EXPOSE 3002
-CMD ["npm", "start"]
+RUN chmod +x docker-start.sh
+CMD ["./docker-start.sh"]
+
