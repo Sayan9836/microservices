@@ -7,12 +7,13 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 
-app.get('/health', (req, res) => {
-    res.json({
+app.get('/health', (_req, _res) => {
+    _res.json({
         success: true,
         message: 'Task Service is running'
     });
 });
+
 
 app.use('/api/v1/tasks', todoRouter);
 

@@ -4,11 +4,12 @@ import { prisma } from '@/config/db';
 
 
 
-export const auth = (...requiredRights: string[]) => async (
+export const auth = (..._requiredRights: string[]) => async (
   req: any,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
