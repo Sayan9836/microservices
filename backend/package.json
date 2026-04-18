@@ -5,14 +5,17 @@
   "scripts": {
     "install:auth": "cd auth-service && npm install",
     "install:task": "cd task-service && npm install",
-    "install-all": "npm-run-all install:auth install:task",
+    "install:gateway": "cd gateway && npm install",
+    "install-all": "npm-run-all install:auth install:task install:gateway",
     "prisma:generate": "npm-run-all prisma:auth prisma:task",
     "prisma:auth": "cd auth-service && npx prisma generate",
     "prisma:task": "cd task-service && npx prisma generate",
     "docker:up": "docker-compose up --build",
-    "dev": "npm-run-all --parallel dev:auth dev:task",
+    "dev": "npm-run-all --parallel dev:auth dev:task dev:gateway",
     "dev:auth": "cd auth-service && npm run dev",
-    "dev:task": "cd task-service && npm run dev"
+    "dev:task": "cd task-service && npm run dev",
+    "dev:gateway": "cd gateway && npm run dev"
+
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"

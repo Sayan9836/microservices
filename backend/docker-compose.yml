@@ -60,6 +60,20 @@ services:
     networks:
       - todo-network
 
+  gateway:
+    build: ./gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - TASK_SERVICE_URL=http://task-service:3002
+    depends_on:
+      - auth-service
+      - task-service
+    networks:
+      - todo-network
+
 networks:
   todo-network:
     driver: bridge
