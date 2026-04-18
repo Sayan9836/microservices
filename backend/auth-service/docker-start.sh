@@ -2,7 +2,8 @@
 
 echo "Waiting for Auth Database to be ready..."
 # A simple way to wait for the DB
-npx prisma migrate deploy
+npx prisma db push
+
 
 echo "Starting Auth Service..."
 npm start
