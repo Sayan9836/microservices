@@ -34,6 +34,9 @@ services:
     build: ./auth-service
     ports:
       - "3001:3001"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
     environment:
       - DATABASE_URL=postgresql://user:password@auth-db:5432/auth_db?schema=public
       - PORT=3001
@@ -49,6 +52,9 @@ services:
     build: ./task-service
     ports:
       - "3002:3002"
+    volumes:
+      - ./task-service:/app
+      - /app/node_modules
     environment:
       - DATABASE_URL=postgresql://user:password@task-db:5432/task_db?schema=public
       - PORT=3002
@@ -64,6 +70,9 @@ services:
     build: ./gateway
     ports:
       - "3000:3000"
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
     environment:
       - PORT=3000
       - AUTH_SERVICE_URL=http://auth-service:3001
