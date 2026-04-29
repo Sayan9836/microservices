@@ -7,6 +7,12 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 
+// Simple Request Logger
+app.use((req, _res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    next();
+});
+
 app.get('/health', (_req, _res) => {
     _res.json({
         success: true,

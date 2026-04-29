@@ -4,6 +4,10 @@ import { Router } from "express";
 
 const todoRouter = Router();
 
+todoRouter.get('/health', (_req, res) => {
+    res.json({ success: true, message: 'Task API is reachable via Gateway' });
+});
+
 todoRouter.get('/', auth(), getTodos);
 todoRouter.post('/', auth('addTodo'), addTodo);
 todoRouter.patch('/:id', auth(), updateTodo);
