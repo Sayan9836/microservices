@@ -7,7 +7,7 @@ export const getTodos = async (req: Request, res: Response) => {
         const userId = (req as any).user.id;
         const todos = await prisma.todo.findMany({
             where: { userId },
-            include: { category: true },
+            include: { category: true, tags: true },
             orderBy: { createdAt: 'desc' }
         });
 
@@ -36,13 +36,21 @@ export const addTodo = async (req: Request, res: Response) => {
     }
     try {
         const userId = (req as any).user.id;
+        const data: any = {
+            name,
+            userId,
+            categoryId: req.body.categoryId || null
+        };
+
+        if (req.body.tagIds) {
+            data.tags = {
+                connect: req.body.tagIds.map((id: string) => ({ id }))
+            };
+        }
+
         const todo = await prisma.todo.create({
-            data: { 
-                name,
-                userId,
-                categoryId: req.body.categoryId || null
-            },
-            include: { category: true }
+            data,
+            include: { category: true, tags: true }
         })
 
         // Publish event to RabbitMQ
@@ -65,18 +73,26 @@ export const addTodo = async (req: Request, res: Response) => {
 
 export const updateTodo = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { name, completed } = req.body;
         const userId = (req as any).user.id;
 
+        const data: any = {
+            name,
+            completed,
+            categoryId: req.body.categoryId !== undefined ? req.body.categoryId : undefined
+        };
+
+        if (req.body.tagIds) {
+            data.tags = {
+                set: req.body.tagIds.map((tId: string) => ({ id: tId }))
+            };
+        }
+
         const todo = await prisma.todo.update({
             where: { id, userId },
-            data: { 
-                name, 
-                completed,
-                categoryId: req.body.categoryId
-            },
-            include: { category: true }
+            data,
+            include: { category: true, tags: true }
         });
 
         return res.status(200).json({
@@ -94,7 +110,7 @@ export const updateTodo = async (req: Request, res: Response) => {
 
 export const deleteTodo = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const userId = (req as any).user.id;
 
         await prisma.todo.delete({

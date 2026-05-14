@@ -30,12 +30,18 @@ export interface Category {
     name: string;
 }
 
+export interface Tag {
+    id: string;
+    name: string;
+}
+
 export interface TodoItem {
     id: string;
     name: string;
     completed: boolean;
     categoryId?: string | null;
     category?: Category | null;
+    tags?: Tag[];
 }
 
 export interface FetchResult<T> {

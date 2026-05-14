@@ -1,5 +1,6 @@
 import { addTodo, deleteTodo, getTodos, updateTodo } from "@/controllers/todos.controller";
 import { getCategories, addCategory, updateCategory, deleteCategory } from "@/controllers/categories.controller";
+import { getTags, addTag, deleteTag } from "@/controllers/tags.controller";
 import { auth } from "@/middleware/auth.middleware";
 import { Router } from "express";
 
@@ -21,5 +22,9 @@ todoRouter.post('/categories', auth(), addCategory);
 todoRouter.patch('/categories/:id', auth(), updateCategory);
 todoRouter.delete('/categories/:id', auth(), deleteCategory);
 
-export default todoRouter;
+// Tag routes
+todoRouter.get('/tags', auth(), getTags);
+todoRouter.post('/tags', auth(), addTag);
+todoRouter.delete('/tags/:id', auth(), deleteTag);
 
+export default todoRouter;

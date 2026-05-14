@@ -52,6 +52,15 @@ const Item = ({ todo, setTodos }: { todo: TodoItem; setTodos: React.Dispatch<Rea
             {todo.category.name}
           </span>
         )}
+        {todo.tags && todo.tags.length > 0 && (
+          <div className="flex gap-1 ml-2">
+            {todo.tags.map(tag => (
+              <span key={tag.id} className="px-2 py-0.5 rounded-md bg-neutral-800 border border-neutral-700 text-[10px] font-medium text-neutral-400">
+                #{tag.name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <button

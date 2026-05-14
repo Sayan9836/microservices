@@ -1,7 +1,7 @@
 import { prisma } from "@/config/db"
 import type { Request, Response } from "express"
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getCategories = async (_req: Request, res: Response) => {
     try {
         const categories = await prisma.category.findMany({
             orderBy: { name: 'asc' }
@@ -49,7 +49,7 @@ export const addCategory = async (req: Request, res: Response) => {
 
 export const updateCategory = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { name } = req.body;
 
         const category = await prisma.category.update({
@@ -72,7 +72,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const deleteCategory = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         await prisma.category.delete({
             where: { id }
