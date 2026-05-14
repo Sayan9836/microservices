@@ -7,6 +7,7 @@ export const getTodos = async (req: Request, res: Response) => {
         const userId = (req as any).user.id;
         const todos = await prisma.todo.findMany({
             where: { userId },
+            include: { category: true },
             orderBy: { createdAt: 'desc' }
         });
 
@@ -38,8 +39,10 @@ export const addTodo = async (req: Request, res: Response) => {
         const todo = await prisma.todo.create({
             data: { 
                 name,
-                userId
-            }
+                userId,
+                categoryId: req.body.categoryId || null
+            },
+            include: { category: true }
         })
 
         // Publish event to RabbitMQ
@@ -68,7 +71,12 @@ export const updateTodo = async (req: Request, res: Response) => {
 
         const todo = await prisma.todo.update({
             where: { id, userId },
-            data: { name, completed }
+            data: { 
+                name, 
+                completed,
+                categoryId: req.body.categoryId
+            },
+            include: { category: true }
         });
 
         return res.status(200).json({

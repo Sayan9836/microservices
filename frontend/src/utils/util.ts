@@ -4,7 +4,7 @@ import type { AxiosRequestConfig } from 'axios'
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000') + '/api/v1';
 
 const api = axios.create({
-    baseURL: (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'),
+    baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
@@ -25,10 +25,17 @@ interface ApiResponse<T> {
     data: T;
 }
 
+export interface Category {
+    id: string;
+    name: string;
+}
+
 export interface TodoItem {
     id: string;
     name: string;
     completed: boolean;
+    categoryId?: string | null;
+    category?: Category | null;
 }
 
 export interface FetchResult<T> {

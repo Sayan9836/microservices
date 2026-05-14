@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import Todo from "../components/Todo/Todo.tsx"
 
 const Home = () => {
@@ -26,13 +26,19 @@ const Home = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="hidden sm:flex flex-col items-end">
+            <Link 
+              to="/categories"
+              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+            >
+              Collections
+            </Link>
+            <div className="hidden sm:flex flex-col items-end border-l border-neutral-900 pl-6">
               <span className="text-sm font-medium text-white">{user.name || 'User'}</span>
               <span className="text-xs text-neutral-500">{user.email}</span>
             </div>
             <button 
               onClick={handleLogout}
-              className="px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-800 hover:border-neutral-700 transition-all text-sm font-medium"
+              className="px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all text-sm font-medium"
             >
               Logout
             </button>

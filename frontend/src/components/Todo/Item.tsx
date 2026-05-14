@@ -47,6 +47,11 @@ const Item = ({ todo, setTodos }: { todo: TodoItem; setTodos: React.Dispatch<Rea
         <span className={`text-lg transition-all ${todo.completed ? 'text-neutral-600 line-through' : 'text-neutral-200'}`}>
           {todo.name}
         </span>
+        {todo.category && (
+          <span className="px-2 py-0.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-[10px] font-bold text-purple-400 uppercase tracking-wider">
+            {todo.category.name}
+          </span>
+        )}
       </div>
 
       <button
